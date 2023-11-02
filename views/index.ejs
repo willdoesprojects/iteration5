@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <meta charset="utf-8" />
+        <title>Listner's Page</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <link href='https://fonts.googleapis.com/css?family=Assistant' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
+    />
+        
+    </head>
+
+    <body>
+        <header>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./">Lofi-Station</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#"><img src = ""
+                    alt = "profile-picture" /></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="btn">
+               <button class="pref-btn" onclick="window.location.href = './preferences.html'">Preferences</button> 
+            </section>
+
+            <section class="current-song" id="current-song">
+                <figure>
+                    <img src="./album_cover.webp" alt="album-cover" id="cover"/>
+                    <figcaption><i>Album Cover</i></figcaption>
+                </figure>
+            
+                <h1 id="title"><%= songName %></h1>
+                <h2 id="artist"><%= artist %></h2>
+                
+            </section>
+
+            <section class="song-queue">
+                <h1>Song Queue</h1>
+                <div class="grid-1">
+                    <% let counter = 1; %>
+                    <% for (let i = 0; i < data.length; i++) { %>
+                        <% if (i !== index) { %>
+                            <article>
+                                <p><%= counter %></p>
+                                <img src="<%= data[i].imageLoco %>" alt="album-cover">
+                                <p><%= data[i].songName %></p>
+                            </article>
+                            <% counter += 1; %>
+                        <% } %>
+                    <% } %>
+                </div>
+            </section>
+
+            <section class="dj-queue">
+                <h1>DJ Queue</h1>
+                <div class="grid-2">
+                
+               
+                </div>
+            </section>
+            
+            <section class="audio-player">
+                <audio src = "" id="audio">
+                </audio>
+
+                <div class="progress-container" id="progress-container">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <article class="duration">
+                    <p id="current-duration">0:00</p>
+                    <p id="total-duration">0:00</p>
+                    
+                </article>
+
+                <article class="music-buttons">
+                    <button id="prev" class="action-btn">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button id="play" class="action-btn action-btn-big">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="next" class="action-btn">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </article>
+            </section>
+            
+            <script src="js/script.js"></script>
+        </main>
+        
+    </body>
+</html>

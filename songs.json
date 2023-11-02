@@ -1,0 +1,20 @@
+[{
+    "songName": "I feel it",
+    "artist": "Saint Luna",
+    "songLoco": "songs/ifeelit.mp3",
+    "imageLoco": "images/ifeelit.jpeg"
+},
+
+{
+    "songName": "How Much Is W**d",
+    "artist": "Domnic Fike",
+    "songLoco": "songs/howmuchiswd.mp3",
+    "imageLoco": "images/howmuchiswd.jpg"
+},
+
+{
+    "songName": "On Your Own",
+    "artist": "Vacations",
+    "songLoco": "songs/onyourown.mp3",
+    "imageLoco": "images/onyourown.jpg"
+}]
