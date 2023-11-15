@@ -1,10 +1,24 @@
 const express = require("express");
+const session = require("express-session");
+
 const app = express();
 const fs = require("fs");
 const bodyParser = require("body-parser");
 
+
+
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public/'));
+
+
+
+
+app.use(session({
+    secret: 'key that will be',
+    resave: true,
+    saveUninitialized: false
+}))
+
 
 let index_val = 0;
 const songs = JSON.parse(fs.readFileSync('songs.json'));
@@ -14,6 +28,8 @@ app.set('views', './views');
 
 
 app.get("/", (req, res) => {
+    req.session.isAuth = true;
+    console.log(req.session);
     res.render('index', {songName: songs[index_val]["songName"], artist: songs[index_val]["artist"], data: songs, index: index_val});
 })
 
