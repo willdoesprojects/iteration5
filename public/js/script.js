@@ -22,7 +22,7 @@ function retrieveServer() {
     const { song, index } = data;
     index_val = index;
     loadSong(song);
-    
+    console.log(song);
   });
 }
 

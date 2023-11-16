@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+    <html lang="eng">
+        <head>
+            <meta charset="utf-8" />
+            <title>Sign Up</title>
+            <link rel="stylesheet" href = "css/signup.css" />
+            <link href='https://fonts.googleapis.com/css?family=Assistant' rel='stylesheet'>
+        </head>
+        <body>
+            <header>
+                <nav class ="navbar">
+                    <a href ="./">Go Back</a>
+                </nav>
+            </header>
+
+            <main>
+                <section class="signup" id="signupSection">
+                    <form action="/signup" method="POST" class="register-form">
+                        <h1>Lofi-Station</h1>
+                        <h1>Sign Up Today.</h1>
+                        <input required type="text" placeholder="Username" name="username"/>
+                        <input required type="email" placeholder="Email" name="email"/>
+                        <input required type="password" placeholder="Password" name="password"/>
+                        <button>Begin Your Journey</button>
+                        <p class="message">Already registerd?  <a id="signUpLink" href="#">Sign In</a></p>
+                    </form>
+                </section>
+
+                <section class="login" id="loginSection">
+                    <form action = "/login" method="POST" class="login-form">
+                        <h1>Lofi-Station</h1>
+                        <h1>Welcome Back.</h1>
+                        <input required type="text" placeholder="Username" name="username" />
+                        <input required type="password" placeholder="Password" name="password"/>
+                        <button>Login</button>
+                        <p class="message">Not registerd? <a id="signInLink" href="#">Create an account</a></p>
+                    </form>
+                </section>
+            
+                <script src="js/signup.js"></script>
+            </main>
+
+        </body>
+    </html>

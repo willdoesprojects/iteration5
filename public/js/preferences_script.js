@@ -35,7 +35,31 @@ let dj_three = {
     type: "dj"
 }
 
-song_dj_list = [song_one, song_two, song_three, dj_one, dj_two, dj_three];
+song_dj_list = []
+favoriteSongList = []
+
+async function fetchSongData() {
+    const response = await fetch("/listsongs");
+    const data = await response.json();
+    return data; 
+}
+
+fetchSongData().then((data) => {
+    song_dj_list = data;
+})
+
+
+
+async function fetchFavoriteSongData() {
+    const response = await fetch("/getfavoritesongs");
+    const data = await response.json();
+    return data; 
+}
+
+fetchFavoriteSongData().then((data) => {
+    favoriteSongList = data;
+})
+
 
 let liked_songs = document.querySelector(".liked-songs");
 let liked_djs = document.querySelector(".liked-djs")
@@ -58,19 +82,27 @@ function search_bar() {
             
             btn.appendChild(text2);
             
-            if (song_dj_list[i]["type"] == "song" && search_input.length != 0) {
-                btn.addEventListener("click", function() {
-                    result.removeChild(btn);
-                    liked_songs.appendChild(result);
-                }); 
-            }
+            const songName = song_dj_list[i]["name"];
+            console.log(songName);
+            btn.addEventListener("click", function() {
+                result.removeChild(btn);
 
-            if (song_dj_list[i]["type"] == "dj" && search_input.length != 0) {
-                btn.addEventListener("click", function() {
-                    result.removeChild(btn);
-                    liked_djs.appendChild(result);
-                }); 
-            }
+                fetch("addsongtofavorites", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({  song: songName })
+                })
+            }); 
+            
+
+            // if (song_dj_list[i]["type"] == "dj" && search_input.length != 0) {
+            //     btn.addEventListener("click", function() {
+            //         result.removeChild(btn);
+            //         liked_djs.appendChild(result);
+            //     }); 
+            // }
             
             result.appendChild(btn);
 
@@ -84,8 +116,6 @@ function search_bar() {
     }
 
 }
-
-
 
 const modal = document.querySelector(".modal-songs");
 const overlay = document.querySelector(".overlay-1");
@@ -110,20 +140,40 @@ document.addEventListener("keydown", function (e) {
 });
 
 
+
 const openModal = function () {
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
+
+  for (let i = 0; i < favoriteSongList["favoriteSongs"].length; i++) {
+    const liElement = document.createElement("li");
+    const text = document.createTextNode(favoriteSongList["favoriteSongs"][i]);
+    liElement.appendChild(text);
+    liked_songs.appendChild(liElement);
+  }
+
   const likedSongList = document.querySelectorAll(".liked-songs li");
-  console.log(likedSongList)
+
+  console.log(favoriteSongList);
+
   for (let i = 0; i < likedSongList.length; i++) {
         const text = document.createTextNode("Remove");
         const btn = document.createElement("button");
             
         btn.appendChild(text);
         
-            
+        const songName = favoriteSongList["favoriteSongs"][i];
+
         btn.addEventListener("click", function() {
             liked_songs.removeChild(likedSongList[i])
+            
+            fetch("removefavoritesong", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({  song: songName })
+            })
         }); 
         
         likedSongList[i].appendChild(btn);
