@@ -15,18 +15,6 @@ fetchSongData().then((data) => {
 })
 
 
-
-async function fetchFavoriteSongData() {
-    const response = await fetch("/getfavoritesongs");
-    const data = await response.json();
-    return data; 
-}
-
-fetchFavoriteSongData().then((data) => {
-    favoriteSongList = data;
-})
-
-
 let liked_songs = document.querySelector(".liked-songs");
 let liked_djs = document.querySelector(".liked-djs")
 
@@ -52,17 +40,20 @@ function search_bar() {
             btn.addEventListener("click", function() {
                 result.removeChild(btn);
                 search_results.removeChild(result);
-                fetch("addsongtofavorites", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({  song: song })
-                })
+                
+                async function addFavSongPost() {
+                    await fetch("addsongtofavorites", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ song: song })
+                    })
+                }
 
-                fetch("setqueue", {
-                    method: "POST"
-                })
+                
+
+                addFavSongPost();
             }); 
             
 
@@ -95,6 +86,7 @@ const closeModalBtn = document.querySelector(".btn-close");
 const closeModal = function () {
   modal.classList.add("hidden");
   overlay.classList.add("hidden");
+ 
 };
 
 
@@ -111,6 +103,9 @@ document.addEventListener("keydown", function (e) {
 
 
 const openModal = function () {
+
+  
+
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
 
@@ -135,22 +130,32 @@ const openModal = function () {
         btn.addEventListener("click", function() {
             liked_songs.removeChild(likedSongList[i])
             
-            fetch("removefavoritesong", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({  song: song })
-            })
-
-            fetch("setqueue", {
-                method: "POST"
-            })
+            async function removeFavSongPost() {
+                await fetch("removefavoritesong", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ song: song })
+                })
+            }
+            
+            removeFavSongPost();
+            
         }); 
         
         likedSongList[i].appendChild(btn);
   }
 };
+async function fetchFavoriteSongData() {
+    const response = await fetch("/getfavoritesongs");
+    const data = await response.json();
+    return data; 
+}
 
-openModalBtn.addEventListener("click", openModal);
+fetchFavoriteSongData().then((data) => {
+    favoriteSongList = data;
+    openModalBtn.addEventListener("click", openModal);
+})
+
 

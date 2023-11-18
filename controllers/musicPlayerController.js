@@ -5,49 +5,54 @@ const homePageHandler = async (req, res) => {
         req.session.index = 0;
     }
 
-    console.log(req.session.index);
-    req.session.isAuth = true;
 
     if (req.session.isAuth) {
         
-        const user = await UserModel.findById("6557fdad318815885c10e254");
+        const user = await UserModel.findById(req.session.userId);
 
         if (user.queuedSongs.length === 0) {
-            res.render('index', {link: "#", username: user["username"], songName: "Hello", artist: "Please add songs to begin.", data: [], index: 0});
+            res.render('index', {func: "logOut()", link: "#", username: user["username"], songName: "Hello", artist: "Please add songs to begin."});
         }
         
         else {
-            
-            res.render('index', {link: "#", username: user["username"], songName: user["queuedSongs"][req.session.index]["name"], artist: user["queuedSongs"][req.session.index]["artist"], data: user.queuedSongs, index: req.session.index});
+            res.render('index', {func: "logOut()", link: "#", username: user["username"], songName: user["queuedSongs"][req.session.index]["name"], artist: user["queuedSongs"][req.session.index]["artist"]});
 
         }
         
     }
     else {
-        res.render('index', {link: "./signup", username: "Login", songName: "Welcome!", artist: "Please Login to Get Started.", data: [], index: 0});
+        res.render('index', {func: "", link: "./signup", username: "Login", songName: "Welcome!", artist: "Please Login to Get Started."});
     }
 }
 
 
 const getSongQueueHandler = async (req, res) => {
-    const user = await UserModel.findById("6557fdad318815885c10e254");
+    const user = await UserModel.findById(req.session.userId);
+
     if (user == null) {
         res.json(null);
     }
     
     else {
-        res.json(user.queuedSongs);
+        res.json({queuedSongs: user.queuedSongs, index: req.session.index});
     }
     
 };
 
 const getIndexIncrHandler = async (req, res) => {
+    const { index } = req.body;
+    req.session.index = index;
+    res.redirect("/");
     
 }
 
 const getIndexDecrHandler = async (req, res) => {
-    req.session -= 1;
+    const { index } = req.body;
+    req.session.index = index;
+    res.redirect("/");
+    
 }
+
 
 
 

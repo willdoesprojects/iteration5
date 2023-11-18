@@ -7,8 +7,13 @@ const favSongsListHandler = async (req, res) => {
 
 const addFavSongHandler = async (req, res) => {
     const { song } = req.body;
+
     const user = await UserModel.findById(req.session.userId);
+
     user.favoriteSongs.push(song);
+
+    user.queuedSongs.push(song);
+
 
     await user.save();
 }
@@ -16,10 +21,9 @@ const addFavSongHandler = async (req, res) => {
 const removeFavSongHandler = async (req, res) => {
     const { song } = req.body;
 
-    console.log(song);
-
     const user = await UserModel.findById(req.session.userId);
     user.favoriteSongs.remove(song);
+    user.queuedSongs.remove(song);
 
     await user.save();
 }
@@ -37,5 +41,6 @@ const setQueueHandler = async (req, res) => {
 
     await user.save();
 }
+
 
 module.exports = { favSongsListHandler, addFavSongHandler, removeFavSongHandler, getSongs, setQueueHandler };

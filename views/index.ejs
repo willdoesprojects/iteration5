@@ -16,7 +16,7 @@
                 <ul>
                     <li><a href="./">Lofi-Station</a></li>
                     <li><a href="#">About Us</a></li>
-                    <li><a href= <%= link %>><%= username %></a></li>
+                    <li><a href= <%= link %> onclick=<%= func %>><%= username %></a></li>
                 </ul>
             </nav>
         </header>
@@ -39,18 +39,10 @@
 
             <section class="song-queue">
                 <h1>Song Queue</h1>
-                <div class="grid-1">
-                    <% let counter = 1; %>
-                    <% for (let i = 0; i < data.length; i++) { %>
-                        <% if (i !== index) { %>
-                            <article>
-                                <p><%= counter %></p>
-                                <img src="<%= data[i].imageLoco %>" alt="album-cover">
-                                <p><%= data[i].songName %></p>
-                            </article>
-                            <% counter += 1; %>
-                        <% } %>
-                    <% } %>
+                <div class="grid-1" id="grid-1">
+                    <article>
+                        
+                    </article>
                 </div>
             </section>
 

@@ -13,6 +13,7 @@ const songsRoute = require("./routes/SongsRouter");
 const musicPlayerRoute = require("./routes/MusicPlayerRouter");
 
 const crypto = require('crypto');
+const { db } = require("./models/Users");
 
 mongoose.connect(uri).then(() => {
     console.log("Connected!");
@@ -51,6 +52,15 @@ app.use(Preference);
 
 //Route for CRUD operations on songs
 app.use(songsRoute);
+
+//Logoout route
+app.post("/logout", async (req, res) => {
+
+    if (req.session.isAuth) {
+        req.session.destroy();
+        res.redirect("/");
+    }
+})
 
 let port = 8080;
 app.listen(port, () => {

@@ -1,5 +1,3 @@
-const { json } = require("express");
-
 const musicContainer = document.getElementById('current-song');
 const playBtn = document.getElementById('play');
 const prevBtn = document.getElementById('prev');
@@ -10,6 +8,8 @@ const progress = document.getElementById('progress');
 const progressContainer = document.getElementById('progress-container');
 const title = document.getElementById('title');
 const cover = document.getElementById('cover');
+
+const songQueueContainer = document.getElementById('grid-1');
 
 const currentDurr = document.getElementById('current-duration');
 const totalDurr = document.getElementById('total-duration');
@@ -27,7 +27,8 @@ async function fetchQueue() {
 }
 
 fetchQueue().then((data) => {    
-    songQueue = data;
+    songQueue = data.queuedSongs;
+    index_val = data.index;
     loadSong();
     
 })
@@ -61,6 +62,36 @@ function loadSong() {
                 totalDurr.innerText = minute.toString() + ":" + seconds.toString();
             }
         });
+
+        document.getElementById('title').innerText = song["name"];
+        document.getElementById('artist').innerText = song["artist"];
+
+        let counter = 1;
+
+        songQueueContainer.innerHTML = ``;
+
+        for (let i = index_val+1; i < songQueue.length; i++) {
+            const article = document.createElement('article');
+            article.innerHTML = `
+            <p>${counter}</p>
+            <img src = "${songQueue[i]["imageLoco"]}" alt="album-cover">
+            <p>${songQueue[i]["name"]}</p>
+            `
+            counter += 1;
+            songQueueContainer.appendChild(article);
+        };
+
+        for (let i = 0; i < index_val; i++) {
+            const article = document.createElement('article');
+            article.innerHTML = `
+            <p>${counter}</p>
+            <img src = "${songQueue[i]["imageLoco"]}" alt="album-cover">
+            <p>${songQueue[i]["name"]}</p>
+            `
+            
+            counter += 1;
+            songQueueContainer.appendChild(article);
+        };
     }
 }
 
@@ -89,6 +120,19 @@ function prevSong() {
     if (index_val < 0) {
         index_val = 0;
     }
+
+    async function prevPost() {
+        await fetch("/decrindex", {
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ index:index_val})
+        })
+    }
+
+    prevPost();
+
     loadSong();
     playSong();
 }
@@ -103,21 +147,26 @@ function nextSong() {;
         index_val = songQueue.length - 1;
     }
 
-    async function nextSong() {
+    async function postNextSong() {
         await fetch('/incrindex', {
             method: "POST",
             headers: {
                 "Content-Type":"application/json"
             },
 
-            body: JSON.stringify({ index: index_val})
+            body: JSON.stringify({ index: index_val}),
+
+            
         }) 
     }
 
-    nextSong();
+    
 
+    postNextSong();
+    
     loadSong();
     playSong();
+    
     
 }
 
@@ -166,7 +215,18 @@ audio.addEventListener('ended', () => {
     nextSong();
   });
   
-  
+async function logOut() {
+    await fetch('/logout', {
+        method: "POST",
+        headers: {
+            "Content-Type":"application/json"
+        },
+        
+    }
+    )
+
+    location.reload();
+}
 
 
 
