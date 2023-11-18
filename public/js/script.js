@@ -15,40 +15,65 @@ const totalDurr = document.getElementById('total-duration');
 let isPlaying = false;
 let index_val = 0;
 
-function retrieveServer() {
-    fetch("/getSong")
-    .then((response) => response.json())
-    .then((data) => {
-    const { song, index } = data;
-    index_val = index;
-    loadSong(song);
-    console.log(song);
-  });
+songQueue = [];
+
+
+async function fetchQueue() {
+    const response = await fetch("/getsongqueue");
+    const data = await response.json();
+    return data;
 }
 
-retrieveServer();
-
-function loadSong(song) {
-    audio.src = `${song["songLoco"]}`;
-    cover.src = `${song["imageLoco"]}`;
+fetchQueue().then((data) => {    
+    songQueue = data;
+    loadSong();
     
+})
 
-}
 
-function playSong() {
-    playBtn.querySelector('i.fas').classList.remove('fa-play');
-    playBtn.querySelector('i.fas').classList.add('fa-pause');
-    isPlaying = true;
-    const duration = audio.duration;
-    const minute = Math.floor(duration / 60);
-    const seconds = Math.round(duration % 60);
-    if (seconds < 10) {
-        totalDurr.innerText = minute.toString() + ":" + "0" + seconds.toString();
+function loadSong() {
+    
+    if (songQueue == null) {
+        playBtn.disabled = true;
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
     }
 
     else {
-        totalDurr.innerText = minute.toString() + ":" + seconds.toString();
+        playBtn.disabled = false;
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+        song = songQueue[index_val];
+        audio.src = `${song["songLoco"]}`;
+        cover.src = `${song["imageLoco"]}`;
+
+
+
+
+        audio.addEventListener('loadedmetadata', () => {
+            const duration = audio.duration;
+            const minute = Math.floor(duration / 60);
+            const seconds = Math.round(duration % 60);
+            if (seconds < 10) {
+                totalDurr.innerText = minute.toString() + ":" + "0" + seconds.toString();
+            }
+
+            else {
+                totalDurr.innerText = minute.toString() + ":" + seconds.toString();
+            }
+        });
     }
+}
+
+
+
+function playSong() {
+
+    playBtn.querySelector('i.fas').classList.remove('fa-play');
+    playBtn.querySelector('i.fas').classList.add('fa-pause');
+    isPlaying = true;
+    
+
     audio.play();
 }
 
@@ -60,32 +85,27 @@ function pauseSong() {
 }
 
 function prevSong() {
-    fetch("/songDone", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: (index_val - 1) }),
-    });
+    index_val -= 1;
 
-    retrieveServer();
-    location.reload();
+    if (index_val < 0) {
+        index_val = 0;
+    }
+    loadSong();
     playSong();
 }
 
 prevBtn.addEventListener('click', prevSong);
 
-function nextSong() {
-    fetch("/songDone", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: (index_val + 1) }),
-    });
+function nextSong() {;
 
-    retrieveServer();
-    location.reload();
+    index_val += 1;
+
+    if (index_val == songQueue.length) {
+        index_val = songQueue.length - 1;
+    }
+
+
+    loadSong();
     playSong();
     
 }
@@ -131,18 +151,8 @@ playBtn.addEventListener('click', () => {
 audio.addEventListener('timeupdate', updateProgress)
 progressContainer.addEventListener('click', setProgress)
 
-
 audio.addEventListener('ended', () => {
-    fetch("/songDone", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ index: (index_val + 1) }),
-    });
-    retrieveServer();
-    location.reload();
-    playSong();
+    nextSong();
   });
   
   

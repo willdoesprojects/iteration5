@@ -1,40 +1,6 @@
 /*
     Search Bar Option
 */
-
-let song_one = {
-    name: "Song 1",
-    artist: "Artist Name 1",
-    type: "song"
-}
-
-let song_two = {
-    name: "Song 2",
-    artist: "Artist Name 2",
-    type: "song"
-}
-
-let song_three = {
-    name: "Song 3",
-    artist: "Artist Name 3",
-    type: "song"
-}
-
-let dj_one = {
-    name: "DJ Name 1",
-    type: "dj"
-}
-
-let dj_two = {
-    name: "DJ Name 2",
-    type: "dj"
-}
-
-let dj_three = {
-    name: "DJ Name 3",
-    type: "dj"
-}
-
 song_dj_list = []
 favoriteSongList = []
 
@@ -82,17 +48,20 @@ function search_bar() {
             
             btn.appendChild(text2);
             
-            const songName = song_dj_list[i]["name"];
-            console.log(songName);
+            const song = song_dj_list[i];
             btn.addEventListener("click", function() {
                 result.removeChild(btn);
-
+                search_results.removeChild(result);
                 fetch("addsongtofavorites", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({  song: songName })
+                    body: JSON.stringify({  song: song })
+                })
+
+                fetch("setqueue", {
+                    method: "POST"
                 })
             }); 
             
@@ -147,14 +116,13 @@ const openModal = function () {
 
   for (let i = 0; i < favoriteSongList["favoriteSongs"].length; i++) {
     const liElement = document.createElement("li");
-    const text = document.createTextNode(favoriteSongList["favoriteSongs"][i]);
+    const text = document.createTextNode(favoriteSongList["favoriteSongs"][i]["name"]);
     liElement.appendChild(text);
     liked_songs.appendChild(liElement);
   }
 
   const likedSongList = document.querySelectorAll(".liked-songs li");
 
-  console.log(favoriteSongList);
 
   for (let i = 0; i < likedSongList.length; i++) {
         const text = document.createTextNode("Remove");
@@ -162,7 +130,7 @@ const openModal = function () {
             
         btn.appendChild(text);
         
-        const songName = favoriteSongList["favoriteSongs"][i];
+        const song = favoriteSongList["favoriteSongs"][i];
 
         btn.addEventListener("click", function() {
             liked_songs.removeChild(likedSongList[i])
@@ -172,7 +140,11 @@ const openModal = function () {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({  song: songName })
+                body: JSON.stringify({  song: song })
+            })
+
+            fetch("setqueue", {
+                method: "POST"
             })
         }); 
         
