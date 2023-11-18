@@ -6,5 +6,8 @@ router.get("/", musicPlayerController.homePageHandler);
 
 router.get("/getsongqueue", musicPlayerController.getSongQueueHandler);
 
+router.post("/incrindex", musicPlayerController.getIndexIncrHandler);
+
+router.post("/decrindex", musicPlayerController.getIndexDecrHandler);
 
 module.exports = router;

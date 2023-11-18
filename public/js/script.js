@@ -1,3 +1,5 @@
+const { json } = require("express");
+
 const musicContainer = document.getElementById('current-song');
 const playBtn = document.getElementById('play');
 const prevBtn = document.getElementById('prev');
@@ -46,9 +48,6 @@ function loadSong() {
         song = songQueue[index_val];
         audio.src = `${song["songLoco"]}`;
         cover.src = `${song["imageLoco"]}`;
-
-
-
 
         audio.addEventListener('loadedmetadata', () => {
             const duration = audio.duration;
@@ -104,6 +103,18 @@ function nextSong() {;
         index_val = songQueue.length - 1;
     }
 
+    async function nextSong() {
+        await fetch('/incrindex', {
+            method: "POST",
+            headers: {
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({ index: index_val})
+        }) 
+    }
+
+    nextSong();
 
     loadSong();
     playSong();

@@ -26,9 +26,7 @@ const store = new mongodbSession({
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public/'));
 
-
 const sessionSecret = crypto.randomBytes(32).toString('hex');
-
 
 app.use(session({
     secret: sessionSecret,
@@ -36,7 +34,6 @@ app.use(session({
     saveUninitialized: true,
     store: store
 }))
-
 
 app.set('view engine', 'ejs');
 app.set('views', './views');

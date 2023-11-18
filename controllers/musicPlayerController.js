@@ -21,7 +21,6 @@ const homePageHandler = async (req, res) => {
             res.render('index', {link: "#", username: user["username"], songName: user["queuedSongs"][req.session.index]["name"], artist: user["queuedSongs"][req.session.index]["artist"], data: user.queuedSongs, index: req.session.index});
 
         }
-
         
     }
     else {
@@ -42,11 +41,16 @@ const getSongQueueHandler = async (req, res) => {
     
 };
 
+const getIndexIncrHandler = async (req, res) => {
+    
+}
+
+const getIndexDecrHandler = async (req, res) => {
+    req.session -= 1;
+}
 
 
 
-
-
-module.exports = { homePageHandler, getSongQueueHandler };
+module.exports = { homePageHandler, getSongQueueHandler, getIndexIncrHandler, getIndexDecrHandler };
 
 
